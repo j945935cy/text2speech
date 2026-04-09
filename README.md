@@ -22,7 +22,7 @@ python tools/generate_dataset.py
 
 開啟：
 
-- GitHub Pages: [使用網頁](https://j945935cy.github.io/text2speech/)
+- GitHub Pages: [立即使用 Word Builder 1200](https://j945935cy.github.io/text2speech/word-builder-1200-single-file.html)
 - Repo 檔案位置：`app/index.html`
 
 ## 資料說明
