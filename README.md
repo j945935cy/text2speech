@@ -1,4 +1,6 @@
-# Word Builder 1200
+# text2speech
+
+## Word Builder 1200
 
 一個可直接開啟的前端小工具，用 1200 個常用英文單字做字首、字根、字尾的拼字與發音練習。
 
@@ -12,15 +14,16 @@
 
 ## 使用方式
 
-1. 重新產生資料：
+重新產生資料：
 
 ```powershell
 python tools/generate_dataset.py
 ```
 
-2. 開啟：
+開啟：
 
-直接用瀏覽器打開 [app/index.html](C:\text2speech\app\index.html)
+- GitHub Pages: <https://j945935cy.github.io/text2speech/>
+- Repo 檔案位置：`app/index.html`
 
 ## 資料說明
 
