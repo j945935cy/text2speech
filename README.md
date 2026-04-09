@@ -22,7 +22,7 @@ python tools/generate_dataset.py
 
 開啟：
 
-- GitHub Pages: <https://j945935cy.github.io/text2speech/>
+- GitHub Pages: [使用網頁](https://j945935cy.github.io/text2speech/)
 - Repo 檔案位置：`app/index.html`
 
 ## 資料說明
