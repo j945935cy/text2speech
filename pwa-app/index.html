@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#284b3d" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Word Builder 1200" />
+    <meta
+      name="description"
+      content="用 1200 個常用英文單字練習字首、字根、字尾，並直接朗讀發音。"
+    />
+    <title>Word Builder 1200</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" />
+    <link rel="icon" href="./assets/icons/icon-192.png" />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-a"></div>
+    <div class="bg-orb orb-b"></div>
+
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">PWA Project</p>
+        <h1>Word Builder 1200</h1>
+        <p class="hero-copy">
+          從 1200 個高頻英文單字出發，學習字首、字根、字尾的組字邏輯，並一鍵朗讀英文發音。
+        </p>
+
+        <div class="hero-stats">
+          <article>
+            <strong id="word-count">0</strong>
+            <span>單字總數</span>
+          </article>
+          <article>
+            <strong id="prefix-count">0</strong>
+            <span>可用字首</span>
+          </article>
+          <article>
+            <strong id="suffix-count">0</strong>
+            <span>可用字尾</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel composer">
+        <div class="panel-head">
+          <div>
+            <p class="mini-title">Builder</p>
+            <h2>組合字首、字根、字尾</h2>
+          </div>
+          <button id="random-btn" class="ghost-btn" type="button">隨機出題</button>
+        </div>
+
+        <div class="picker-grid">
+          <label>
+            <span>字首 Prefix</span>
+            <select id="prefix-select"></select>
+          </label>
+
+          <label>
+            <span>字根 Root</span>
+            <input
+              id="root-select"
+              list="root-options"
+              autocomplete="off"
+              placeholder="輸入字根，例如 help / act / port"
+            />
+            <datalist id="root-options"></datalist>
+          </label>
+
+          <label>
+            <span>字尾 Suffix</span>
+            <select id="suffix-select"></select>
+          </label>
+        </div>
+
+        <div class="build-result">
+          <div>
+            <p class="mini-title">Current Word</p>
+            <h3 id="constructed-word">-</h3>
+            <p id="constructed-analysis" class="muted">請先選擇字首、字根、字尾。</p>
+          </div>
+
+          <div class="result-actions">
+            <button id="speak-current" class="primary-btn" type="button">朗讀單字</button>
+            <button id="clear-btn" class="ghost-btn" type="button">清空</button>
+          </div>
+        </div>
+
+        <div class="match-box">
+          <div class="match-head">
+            <h3>符合條件的單字</h3>
+            <span id="match-count">0 筆</span>
+          </div>
+          <div id="matches" class="chip-list"></div>
+        </div>
+      </section>
+
+      <section class="panel library">
+        <div class="panel-head">
+          <div>
+            <p class="mini-title">Library</p>
+            <h2>1200 單字拆解資料</h2>
+          </div>
+          <input
+            id="search-input"
+            type="search"
+            placeholder="搜尋單字、字首、字根或字尾"
+          />
+        </div>
+
+        <div class="source-note" id="source-note"></div>
+        <div id="word-list" class="word-list"></div>
+      </section>
+    </main>
+
+    <script src="./assets/data/data.js"></script>
+    <script src="./assets/js/app.js"></script>
+  </body>
+</html>

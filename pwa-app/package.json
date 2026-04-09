@@ -1,0 +1,10 @@
+{
+  "name": "word-builder-1200-pwa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A static HTML/CSS/JS PWA for prefix-root-suffix English word building.",
+  "scripts": {
+    "start": "node scripts/dev-server.js",
+    "dev": "node scripts/dev-server.js"
+  }
+}
