@@ -11,6 +11,8 @@ coverage/
 
 *.log
 *.tmp
+__pycache__/
+*.pyc
 
 android-app/.gradle/
 android-app/build-tools/
