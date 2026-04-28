@@ -1,14 +1,14 @@
 {
-  "name": "Word Builder 1200",
+  "name": "Word Builder 1200 字根組字彙教學站",
   "short_name": "Word1200",
-  "description": "1200 common English words with prefix, root, suffix building and pronunciation.",
+  "description": "用字首、字根、字尾拆解 1200 個常用英文單字，搭配發音、字族課程與快問快答。",
   "lang": "zh-Hant",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#f6efe3",
-  "theme_color": "#284b3d",
+  "background_color": "#f7f4ec",
+  "theme_color": "#24514a",
   "icons": [
     {
       "src": "./assets/icons/icon-192.png",

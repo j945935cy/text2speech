@@ -1,4 +1,4 @@
-const CACHE_NAME = "word-builder-1200-v1";
+const CACHE_NAME = "word-builder-1200-v4";
 const ASSETS = [
   "./",
   "./index.html",
