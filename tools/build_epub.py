@@ -1,13 +1,14 @@
 import json
 import re
 import shutil
+import time
 from html import escape
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZIP_STORED, ZipFile
 from xml.etree import ElementTree
 
 
-BOOK_TITLE = "Word Builder 1200 字根組字彙教學站"
+BOOK_TITLE = "Word Builder 1200 字根組字彙教學"
 BOOK_IDENTIFIER = "urn:uuid:word-builder-1200-root-vocabulary"
 BOOK_AUTHOR = "Word Builder 1200"
 BOOK_LANG = "zh-Hant"
@@ -49,6 +50,186 @@ SUFFIX_NOTES = {
     "less": "缺少",
 }
 
+MEANING_ZH = {
+    "act, process": "動作或過程",
+    "again": "再次、回到原狀",
+    "before": "在前、預先",
+    "below": "在下、不足",
+    "between": "在兩者之間",
+    "capable of": "能夠、可以",
+    "care": "照顧、關心",
+    "carry": "帶、搬運",
+    "characterized by": "具有某種特性",
+    "clear": "清楚、明白",
+    "construct": "建造、組成",
+    "core meaning": "基礎字，保留原字意思",
+    "do": "做、行動",
+    "down, remove": "向下、移除",
+    "friend": "朋友、友善",
+    "full of": "充滿、具有",
+    "go see": "去看、探訪",
+    "grow": "成長、增加",
+    "guide": "引導、指引",
+    "having the nature of": "具有某種性質",
+    "help": "幫助、支持",
+    "hope": "希望、期待",
+    "in a ... way": "以某種方式",
+    "just": "公正、正好",
+    "kind": "種類、仁慈",
+    "knowledge": "知識、理解",
+    "make": "製造、使成為",
+    "make, become": "使成為、變成",
+    "most": "最多、最",
+    "move": "移動、改變位置",
+    "nation": "國家、民族",
+    "nature": "自然、本質",
+    "not": "不、否定",
+    "not, into": "不、否定；或表示進入",
+    "not, opposite": "不、相反",
+    "ongoing action": "正在進行的動作",
+    "one who, more": "表示人；或比較級",
+    "out": "向外、離開",
+    "past": "過去、完成",
+    "person or thing that": "表示人或事物",
+    "play": "玩、演出、播放",
+    "read": "閱讀、理解",
+    "related to": "與某事相關",
+    "press": "壓、推、施加壓力",
+    "process or result": "過程或結果",
+    "result, process": "結果或過程",
+    "rule": "規則、管理",
+    "safe": "安全、保護",
+    "see": "看見、理解",
+    "shape": "形狀、形成",
+    "somewhat": "有點、稍微",
+    "speak": "說話、表達",
+    "state": "狀態、情況",
+    "state of": "某種狀態",
+    "state or quality": "狀態或性質",
+    "state, skill, relation": "狀態、能力或關係",
+    "teach": "教導、指導",
+    "together": "共同、一起",
+    "under": "在下、低於",
+    "use": "使用、用途",
+    "work": "工作、運作",
+    "write": "書寫、記錄",
+    "wrongly": "錯誤地、不當地",
+}
+
+BASE_WORD_ZH = {
+    "about": "關於、大約",
+    "after": "在...之後",
+    "all": "全部、所有",
+    "also": "也、同樣",
+    "and": "和、以及",
+    "another": "另一個",
+    "around": "周圍、大約",
+    "as": "作為、如同",
+    "at": "在某處或某時",
+    "back": "背後、返回",
+    "be": "是、存在",
+    "because": "因為",
+    "been": "曾經是、已經",
+    "but": "但是",
+    "by": "藉由、在旁邊",
+    "can": "能夠、可以",
+    "could": "能夠、可能",
+    "current": "目前的、當前的",
+    "day": "日子、白天",
+    "did": "做了",
+    "do": "做、執行",
+    "down": "向下、在下方",
+    "each": "每一個",
+    "example": "例子、範例",
+    "experience": "經驗、體驗",
+    "first": "第一、首先",
+    "for": "為了、對於",
+    "from": "從、來自",
+    "good": "好的、良好的",
+    "great": "偉大的、很棒的",
+    "had": "曾有、已經",
+    "has": "有、已經",
+    "have": "有、擁有",
+    "he": "他",
+    "heard": "聽到、聽見",
+    "her": "她的、她",
+    "here": "這裡",
+    "him": "他",
+    "his": "他的",
+    "how": "如何、怎樣",
+    "if": "如果",
+    "in": "在...裡面",
+    "into": "進入",
+    "is": "是",
+    "it": "它、這件事",
+    "just": "只是、剛好",
+    "know": "知道、了解",
+    "like": "喜歡、像",
+    "london": "倫敦",
+    "made": "製造、完成",
+    "make": "製造、使成為",
+    "many": "許多",
+    "may": "可能、可以",
+    "meet": "遇見、會面",
+    "more": "更多",
+    "most": "最多、大多數",
+    "much": "很多、非常",
+    "new": "新的",
+    "no": "不、沒有",
+    "not": "不、否定",
+    "of": "屬於、關於",
+    "on": "在...上",
+    "one": "一個",
+    "only": "只有、唯一",
+    "or": "或者",
+    "other": "其他的",
+    "out": "出去、向外",
+    "over": "在上方、超過",
+    "people": "人們",
+    "program": "節目、程式、計畫",
+    "said": "說了",
+    "same": "相同的",
+    "see": "看見、理解",
+    "she": "她",
+    "so": "所以、如此",
+    "some": "一些",
+    "such": "這樣的、如此的",
+    "take": "拿取、採取",
+    "than": "比、相較於",
+    "that": "那、那個",
+    "the": "這個、那個",
+    "their": "他們的",
+    "them": "他們",
+    "then": "然後、那時",
+    "there": "那裡、有",
+    "these": "這些",
+    "they": "他們",
+    "thing": "事情、東西",
+    "this": "這、這個",
+    "time": "時間、次數",
+    "to": "到、向、為了",
+    "two": "兩個",
+    "type": "類型、打字",
+    "up": "向上",
+    "us": "我們",
+    "very": "非常",
+    "want": "想要",
+    "was": "是、曾經是",
+    "way": "方法、道路",
+    "we": "我們",
+    "well": "好地、健康的",
+    "were": "是、曾經是",
+    "what": "什麼",
+    "when": "何時、當...時",
+    "which": "哪一個、那一個",
+    "who": "誰",
+    "will": "將會、意願",
+    "with": "和、帶有",
+    "would": "將會、願意",
+    "you": "你、你們",
+    "your": "你的、你們的",
+}
+
 
 def load_word_data(root: Path) -> list[dict]:
     data_path = root / "app" / "data.js"
@@ -74,14 +255,22 @@ def xhtml(title: str, body: str) -> str:
 """
 
 
-def part_note(kind: str, value: str) -> str:
+def meaning_zh(value: str) -> str:
+    if not value:
+        return ""
+    return MEANING_ZH.get(value, value)
+
+
+def part_note(kind: str, value: str, meaning: str = "") -> str:
     if not value:
         return "無"
     if kind == "prefix":
-        return PREFIX_NOTES.get(value, "字首")
+        return PREFIX_NOTES.get(value) or meaning_zh(meaning) or f"放在字根前，改變「{value}」的方向或語氣"
     if kind == "suffix":
-        return SUFFIX_NOTES.get(value, "字尾")
-    return ROOT_NOTES.get(value, ("核心字根", ""))[0]
+        return SUFFIX_NOTES.get(value) or meaning_zh(meaning) or f"接在字根後，改變詞性或形成新意思"
+    if meaning == "core meaning":
+        return BASE_WORD_ZH.get(value, "")
+    return ROOT_NOTES.get(value, (meaning_zh(meaning) or f"與「{value}」相關的意思", ""))[0]
 
 
 def morph(entry: dict) -> str:
@@ -177,7 +366,7 @@ h1, h2, h3 {
 def make_cover(epub_dir: Path) -> None:
     body = """    <section class="cover">
       <h1>Word Builder 1200</h1>
-      <h2>字根組字彙教學站</h2>
+      <h2>字根組字彙教學</h2>
       <p class="lead">把常用英文單字拆成看得懂的字首、字根、字尾。</p>
       <img src="../Images/cover.png" alt="Word Builder 1200 cover" />
     </section>
@@ -191,7 +380,7 @@ def make_intro(epub_dir: Path, entries: list[dict]) -> None:
     suffixes = {entry["suffix"] for entry in entries if entry.get("suffix")}
     body = f"""    <section>
       <h1>使用這本書</h1>
-      <p class="lead">這本 EPUB 由 Word Builder 1200 教學站產生，適合匯入 Google Play Books 或其他 EPUB 閱讀器。</p>
+      <p class="lead">這本 EPUB 由 Word Builder 1200 字根組字彙教學內容產生，適合匯入 Google Play Books 或其他 EPUB 閱讀器。</p>
       <p>全書收錄 {len(entries)} 個常用英文單字，整理出 {len(roots)} 個字根、{len(prefixes)} 個字首、{len(suffixes)} 個字尾。拆解以教學用途為主，目標是幫助讀者建立組字感，不等同完整字源辭典。</p>
       <h2>閱讀方式</h2>
       <ol>
@@ -250,9 +439,9 @@ def make_breakdown(epub_dir: Path, entries: list[dict]) -> None:
         <h2>{escape(entry["word"])}</h2>
         <table class="parts">
           <tbody>
-            <tr><th>字首</th><td>{escape(entry["prefix"] or "無")}</td><td>{escape(part_note("prefix", entry["prefix"]))}</td></tr>
-            <tr><th>字根</th><td>{escape(entry["root"] or "無")}</td><td>{escape(part_note("root", entry["root"]))}</td></tr>
-            <tr><th>字尾</th><td>{escape(entry["suffix"] or "無")}</td><td>{escape(part_note("suffix", entry["suffix"]))}</td></tr>
+            <tr><th>字首</th><td>{escape(entry["prefix"] or "無")}</td><td>{escape(part_note("prefix", entry["prefix"], entry.get("prefixMeaning", "")))}</td></tr>
+            <tr><th>字根</th><td>{escape(entry["root"] or "無")}</td><td>{escape(part_note("root", entry["root"], entry.get("rootMeaning", "")))}</td></tr>
+            <tr><th>字尾</th><td>{escape(entry["suffix"] or "無")}</td><td>{escape(part_note("suffix", entry["suffix"], entry.get("suffixMeaning", "")))}</td></tr>
           </tbody>
         </table>
       </section>"""
@@ -276,9 +465,9 @@ def make_word_chapters(epub_dir: Path, entries: list[dict], size: int = 100) -> 
             notes = " / ".join(
                 part
                 for part in [
-                    part_note("prefix", entry["prefix"]) if entry.get("prefix") else "",
-                    part_note("root", entry["root"]) if entry.get("root") else "",
-                    part_note("suffix", entry["suffix"]) if entry.get("suffix") else "",
+                    part_note("prefix", entry["prefix"], entry.get("prefixMeaning", "")) if entry.get("prefix") else "",
+                    part_note("root", entry["root"], entry.get("rootMeaning", "")) if entry.get("root") else "",
+                    part_note("suffix", entry["suffix"], entry.get("suffixMeaning", "")) if entry.get("suffix") else "",
                 ]
                 if part
             )
@@ -287,7 +476,7 @@ def make_word_chapters(epub_dir: Path, entries: list[dict], size: int = 100) -> 
             <td><span class="rank">#{entry["rank"]}</span></td>
             <td>{escape(entry["word"])}</td>
             <td>{escape(morph(entry))}</td>
-            <td>{escape(notes or "基礎常用字")}</td>
+            <td>{escape(notes)}</td>
           </tr>"""
             )
         title = f"單字庫 {chunk[0]['rank']}-{chunk[-1]['rank']}"
@@ -424,13 +613,26 @@ def package_epub(epub_dir: Path, output_path: Path) -> None:
             epub_zip.write(file_path, file_path.relative_to(epub_dir).as_posix(), compress_type=ZIP_DEFLATED)
 
 
+def remove_tree(path: Path) -> None:
+    if not path.exists():
+        return
+    last_error = None
+    for _ in range(5):
+        try:
+            shutil.rmtree(path)
+            return
+        except PermissionError as error:
+            last_error = error
+            time.sleep(0.4)
+    raise last_error
+
+
 def main() -> None:
     root = Path(__file__).resolve().parents[1]
     out_root = root / "dist" / "google-play-books"
-    epub_dir = out_root / "epub-source"
+    epub_dir = out_root / "epub-source-build"
     output_path = out_root / "word-builder-1200-google-play.epub"
-    if epub_dir.exists():
-        shutil.rmtree(epub_dir)
+    remove_tree(epub_dir)
 
     entries = load_word_data(root)
     write_static_files(epub_dir, root)
